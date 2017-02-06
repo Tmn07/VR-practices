@@ -1,0 +1,144 @@
+<html>
+  <head>
+    <title>VRsic | Power By Tmn07</title>
+    <script src="./aframe.min.js"></script>
+    <script src="./jquery.min.js" ></script>
+  </head>
+  <body>
+<a-scene>
+  <a-assets>
+    <audio id="bg" src="bg.mp3"  preload="auto"></audio>
+    <img id="skyTexture" src="bg.jpg">
+  </a-assets>
+  <a-entity sound="src: #bg"></a-entity>
+
+  <a-plane color="#D2B48C" rotation="-90 0 0" width="20" height="20"></a-plane>
+
+  <a-circle color="white" radius="0.7" position="-2 0 -5.3"></a-circle>
+  <a-circle color="white" radius="0.7" position="0 0 -5.3"></a-circle>
+  <a-circle color="white" radius="0.7" position="2 0 -5.3"></a-circle>
+  <a-circle color="white" radius="0.7" position="4 0 -5.3"></a-circle>
+
+  <a-sky src="#skyTexture"></a-sky>
+
+  <a-camera>
+    <a-cursor id="cursor">
+      <a-animation begin="click" easing="ease-in" attribute="scale"
+                   fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
+      <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale"
+                   from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-animation>
+    </a-cursor>
+  </a-camera>
+
+</a-scene>
+<script type="text/javascript">
+
+  var recordData = new Array();
+  var starttime;
+  var sflag = false;
+
+  function select_color(num)
+  {
+    if (num == 0){
+      color = "red";
+    }
+    else if(num == 1){
+      color = "blue";
+    }
+    else if (num == 2){
+      color = "yellow";
+    }
+    else{
+      color = "black";
+    }
+    return color;
+  }
+
+  function fall_box(num){
+    var sel = $("a-scene");
+    let temp = (num-1)*2;
+    let color = select_color(num);
+    sel.append('<a-circle id="x1" color="'+color+'" radius="0.5" position="'+temp.toString()+' 6 -5"><a-animation attribute="position" to="'+temp.toString()+' -1 -5" direction="alternate" dur="3000">');
+  }
+
+  function startplay(Data){
+      setTimeout(function(){
+        fall_box(Data[0][1])
+      },Data[0][0]);
+    for (let i=1 ; i< Data.length; i++) {
+      console.log(i);
+      setTimeout(function(){
+        fall_box(Data[i][1]);
+      },Data[i][0]);
+    }
+  };
+
+  $(document).keydown(function(event){
+
+  console.log(event.keyCode);
+  var sel = $("a-scene");
+
+  // p (start record)
+  if (event.keyCode==80) {
+    // sel.append('');
+    // setTimeout(function(){
+      let entity = document.querySelector('[sound]');
+      entity.components.sound.playSound();
+      let d = new Date();
+      starttime = d.getTime();
+      sflag = true;
+      recordData = [];
+    // },2000);
+  }
+  // O (stop record)
+  if (event.keyCode==79) {
+      let entity = document.querySelector('[sound]');
+      entity.components.sound.stopSound();
+      // todo:结束record
+      sflag = false;
+      console.log(recordData);
+  }  
+  // i (play)
+  if (event.keyCode==73 ) {
+    if (recordData.length!=0) {
+      let entity = document.querySelector('[sound]');
+      entity.components.sound.playSound();
+      setTimeout(function(){
+        startplay(recordData);
+      },2800);
+    }
+  }
+
+  if (sflag) {
+    // z
+    if (event.keyCode==90) {
+        fall_box(0);
+        console.log([(new Date()).getTime()-starttime, 90]);
+        recordData.push([(new Date()).getTime()-starttime, 0]);
+    }
+    // x
+    if (event.keyCode==88) {
+        fall_box(1);
+        console.log([(new Date()).getTime()-starttime, 88]);
+        recordData.push([(new Date()).getTime()-starttime, 1]);
+    }
+    // 67 c
+    if (event.keyCode==67) {
+        fall_box(2);
+        console.log([(new Date()).getTime()-starttime, 67]);
+        recordData.push([(new Date()).getTime()-starttime, 2]);
+    }
+    // 86 v
+    if (event.keyCode==86) {
+        fall_box(3);
+        console.log([(new Date()).getTime()-starttime, 86]);
+        recordData.push([(new Date()).getTime()-starttime, 3]);
+    }
+  }
+
+  });
+
+</script>
+  <body>
+
+</html>
