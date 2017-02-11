@@ -31,7 +31,7 @@ function change_score(num){
   let entity = document.querySelector("#score");
   let score = entity.getAttribute("bmfont-text").text.substring(7);
   score = parseInt(score) + num;
-  entity.setAttribute("bmfont-text","text:score: "+score.toString()+"; color: black");
+  entity.setAttribute("bmfont-text","text","score: "+score.toString());
 }
 
 function fall_box(num){
@@ -70,32 +70,42 @@ function fall_box(num){
 
 function click_box(num){
   let allBox = $(".box-"+num.toString());
+  var layEl = $("#lay-"+num.toString());
+  layEl.click();
+  layEl.append('<a-animation attribute="radius" dur="500" to="1"></a-animation><a-animation attribute="radius" dur="500" to="0.7" delay="500"></a-animation>');
+  layEl.append('<a-animation attribute="color" dur="500" to="black"></a-animation><a-animation attribute="color" dur="500" to="white" delay="500"></a-animation>');
+  // A2B5CD 颜色变化存在问题。。暂用黑色代替
+
+
   let nearest = 10;
   let nearone = -1;
   for (var i = 0; i < allBox.length ; i++) {
     console.log(allBox[i].getAttribute("position"));
     let data = allBox[i].getAttribute("position");
-    if (nearest > data.y && data.y > -0.5)
+    if (nearest > data.y && data.y > -0.75)
     {
       nearest = data.y;
       nearone = i;
     }
   }
-  // console.log(nearest);
-  if (nearest < 0.25 && nearest > -0.25){
-    change_score(score_list['s1']);
+  if (nearest < 1.3) {
+    // console.log(nearest);
+    if (nearest < 0.25 && nearest > -0.25){
+      change_score(score_list['s1']);
+    }
+    else if (nearest < 0.5 && nearest > -0.5){
+      change_score(score_list['s2']);
+    }
+    else if (nearest < 0.75 && nearest > -0.75){
+      change_score(score_list['s3']);
+    }
+    else {
+      change_score(score_list['f']);
+    }
+    let entity = allBox[nearone];
+    entity.parentNode.removeChild(entity);    
   }
-  else if (nearest < 0.5 && nearest > -0.5){
-    change_score(score_list['s2']);
-  }
-  else if (nearest < 0.75 && nearest > -0.75){
-    change_score(score_list['s3']);
-  }
-  else{
-    change_score(score_list['f']);
-  }
-  let entity = allBox[nearone];
-  entity.parentNode.removeChild(entity);
+
 }
 
 function startplay(Data){
@@ -109,13 +119,6 @@ function startplay(Data){
     },Data[i][0]);
   }
 };
-
-soundEL = document.querySelector('[sound]');
-soundEL.addEventListener("sound-ended",function(){
-  iflag == false;
-  rflag == false;
-})
-
 
 $(document).keydown(function(event){
 
@@ -136,11 +139,16 @@ $(document).keydown(function(event){
       entity.components.sound.stopSound();
       // todo: 结束record
       rflag = false;
+      iflag = false;
+
       console.log(recordData);
   }  
   // i (play)
   if (event.keyCode== 73) {
     iflag = true;
+    let entity = document.querySelector("#score");
+    let score = entity.getAttribute("bmfont-text").text.substring(7);
+    change_score(-1*score);
     if (recordData.length!=0) {
       startplay(recordData);
       setTimeout(function(){
@@ -189,3 +197,12 @@ $(document).keydown(function(event){
   }
 
 });
+
+
+$(function(){ 
+  soundEL = document.querySelector('[sound]');
+  soundEL.addEventListener("sound-ended",function(){
+    iflag == false;
+    rflag == false;
+  })
+}); 

@@ -11,15 +11,18 @@
   <a-assets>
     <audio id="bg" src="bg.mp3"  preload="auto"></audio>
     <img id="skyTexture" src="bg.jpg">
+    <audio id="click-sound" src="audio/click.ogg"></audio>
   </a-assets>
   <a-entity sound="src: #bg"></a-entity>
 
   <a-plane color="#D2B48C" rotation="-90 0 0" width="20" height="20"></a-plane>
 
-  <a-circle color="white" radius="0.7" position="-2 0 -5.3"></a-circle>
-  <a-circle color="white" radius="0.7" position="0 0 -5.3"></a-circle>
-  <a-circle color="white" radius="0.7" position="2 0 -5.3"></a-circle>
-  <a-circle color="white" radius="0.7" position="4 0 -5.3"></a-circle>
+  <a-circle id="lay-0" color="white" radius="0.7" position="-2 0 -5.3" sound="on: click; src: #click-sound">
+  </a-circle>
+  
+  <a-circle id="lay-1" color="white" radius="0.7" position="0 0 -5.3" sound="on: click; src: #click-sound"></a-circle>
+  <a-circle id="lay-2" color="white" radius="0.7" position="2 0 -5.3" sound="on: click; src: #click-sound"></a-circle>
+  <a-circle id="lay-3" color="white" radius="0.7" position="4 0 -5.3" sound="on: click; src: #click-sound"></a-circle>
 
   <a-entity id="score" bmfont-text="text: score: 0;" position="-4 1 -5.3"
     scale="1.5 1.5 1.5"></a-entity>
